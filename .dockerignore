@@ -1,0 +1,36 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+SETUP.md
+
+# Scripts
+start_*.bat
+start_*.sh
+
+# Node modules (for frontend)
+frontend/node_modules
+frontend/build
+
+# Python cache (for backend)
+backend/__pycache__
+backend/*.pyc
+backend/venv
+
+# Database files (will be mounted as volumes)
+backend/applications.db
+
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

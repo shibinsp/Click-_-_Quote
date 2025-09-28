@@ -1,0 +1,53 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: uk-power-backend:prod
+    container_name: uk-power-backend-prod
+    ports:
+      - "4321:4321"
+    volumes:
+      - backend_data:/app/data
+      - backend_db:/app
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: always
+    networks:
+      - uk-power-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4321/api/applications/1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: uk-power-frontend:prod
+    container_name: uk-power-frontend-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - uk-power-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  uk-power-network:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local
+  backend_db:
+    driver: local

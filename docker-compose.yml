@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: uk-power-backend:latest
+    container_name: uk-power-backend
+    ports:
+      - "4321:4321"
+    volumes:
+      - ./backend/data:/app/data
+      - ./backend/applications.db:/app/applications.db
+    environment:
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    networks:
+      - uk-power-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: uk-power-frontend:latest
+    container_name: uk-power-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - uk-power-network
+
+networks:
+  uk-power-network:
+    driver: bridge
+
+volumes:
+  backend_data:
+    driver: local

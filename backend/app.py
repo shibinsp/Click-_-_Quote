@@ -10,7 +10,9 @@ CORS(app)
 
 # Database initialization
 def init_db():
-    conn = sqlite3.connect('applications.db')
+    # Create data directory if it doesn't exist
+    os.makedirs('/app/data', exist_ok=True)
+    conn = sqlite3.connect('/app/data/applications.db')
     cursor = conn.cursor()
     
     # Create applications table
@@ -55,7 +57,7 @@ def init_db():
 @app.route('/api/applications', methods=['POST'])
 def create_application():
     data = request.json
-    conn = sqlite3.connect('applications.db')
+    conn = sqlite3.connect('/app/data/applications.db')
     cursor = conn.cursor()
     
     cursor.execute('''
@@ -84,7 +86,7 @@ def create_application():
 
 @app.route('/api/applications/<int:app_id>', methods=['GET', 'PUT'])
 def handle_application(app_id):
-    conn = sqlite3.connect('applications.db')
+    conn = sqlite3.connect('/app/data/applications.db')
     cursor = conn.cursor()
     
     if request.method == 'GET':
@@ -139,7 +141,7 @@ def handle_application(app_id):
 
 @app.route('/api/load-items/<int:app_id>', methods=['GET', 'POST', 'DELETE'])
 def handle_load_items(app_id):
-    conn = sqlite3.connect('applications.db')
+    conn = sqlite3.connect('/app/data/applications.db')
     cursor = conn.cursor()
     
     if request.method == 'GET':
@@ -177,4 +179,5 @@ def handle_load_items(app_id):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, port=4321)
+    # Use 0.0.0.0 to allow external connections in Docker
+    app.run(host='0.0.0.0', port=4321, debug=False)
