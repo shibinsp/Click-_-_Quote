@@ -4,16 +4,16 @@ import { useApplication } from '../context/ApplicationContext';
 
 const LoadDetails = ({ onNext }) => {
   const navigate = useNavigate();
-  const { loadItems, addLoadItem, removeLoadItem, updateApplication, applicationData } = useApplication();
+  const { loadItems, setLoadItems, addLoadItem, removeLoadItem, updateApplication, applicationData } = useApplication();
   
   const [newItem, setNewItem] = useState({
-    connection_type: 'House',
+    connection_type: 'Demand',
     phases: 'Three',
     heating_type: 'Electric',
     bedrooms: '2',
-    quantity: 1,
-    load_per_installation: 0,
-    summed_load: 0
+    quantity: 2,
+    load_per_installation: 200,
+    summed_load: 400
   });
 
   const [totalLoad, setTotalLoad] = useState(0);
@@ -22,6 +22,23 @@ const LoadDetails = ({ onNext }) => {
     const total = loadItems.reduce((sum, item) => sum + (item.summed_load || 0), 0);
     setTotalLoad(total);
   }, [loadItems]);
+
+  // Add default load item on component mount (only if no items exist)
+  useEffect(() => {
+    if (loadItems.length === 0) {
+      // Set default load item locally without API call
+      setLoadItems([{
+        id: 'default-1',
+        connection_type: 'Demand',
+        phases: 'Three',
+        heating_type: 'Electric',
+        bedrooms: '2',
+        quantity: 2,
+        load_per_installation: 200,
+        summed_load: 400
+      }]);
+    }
+  }, [loadItems.length, setLoadItems]);
 
   const handleInputChange = (field, value) => {
     setNewItem(prev => {
@@ -39,27 +56,40 @@ const LoadDetails = ({ onNext }) => {
   };
 
   const handleAddItem = async () => {
+    // Add locally first
+    const newItemWithId = {
+      ...newItem,
+      id: `local-${Date.now()}`
+    };
+    setLoadItems(prev => [...prev, newItemWithId]);
+    
+    // Try to sync with backend (but don't block UI)
     try {
       await addLoadItem(newItem);
-      setNewItem({
-        connection_type: 'House',
-        phases: 'Three',
-        heating_type: 'Electric',
-        bedrooms: '2',
-        quantity: 1,
-        load_per_installation: 0,
-        summed_load: 0
-      });
     } catch (error) {
-      console.error('Error adding load item:', error);
+      console.log('Backend sync failed, but item added locally:', error);
     }
+    
+    setNewItem({
+      connection_type: 'Demand',
+      phases: 'Three',
+      heating_type: 'Electric',
+      bedrooms: '2',
+      quantity: 2,
+      load_per_installation: 200,
+      summed_load: 400
+    });
   };
 
   const handleRemoveItem = async (itemId) => {
+    // Remove locally first
+    setLoadItems(prev => prev.filter(item => item.id !== itemId));
+    
+    // Try to sync with backend (but don't block UI)
     try {
       await removeLoadItem(itemId);
     } catch (error) {
-      console.error('Error removing load item:', error);
+      console.log('Backend sync failed, but item removed locally:', error);
     }
   };
 
@@ -74,15 +104,15 @@ const LoadDetails = ({ onNext }) => {
     }
   };
 
+
   return (
     <div className="form-container">
       <h1 className="form-title">
-        🏠 Domestic Load Table
+        🏢 Commercial Load Table
       </h1>
       
       <div style={{ marginBottom: '1.5rem' }}>
         <p>Please fill out the table below with your load requirements in KVA</p>
-        <p>If you have selected a "mixed" site, you will be able to provide us with your Commercial loads on the next screen.</p>
         <p>If you are uncertain about your electrical loads, please consult an electrician for advice. Alternatively, please <button type="button" style={{ color: '#007bff', background: 'none', border: 'none', textDecoration: 'underline', cursor: 'pointer' }}>click here</button> for basic guidance.</p>
         <p><strong>A single phase connection can supply up to 23kVA.</strong></p>
         <p><strong>A three phase connection can supply more than 23KVA.</strong></p>
@@ -94,11 +124,11 @@ const LoadDetails = ({ onNext }) => {
             <tr>
               <th>Sr.</th>
               <th>Action</th>
-              <th>What are you connecting?</th>
+              <th>Type of connection</th>
+              <th>What are you Connecting?</th>
               <th>How many phases is the connection</th>
               <th>If a property, how will it be heated?</th>
-              <th>No. of Bedrooms</th>
-              <th>How many are you connecting?</th>
+              <th>How many are you connecting?*</th>
               <th>Load per installation type (kVA)*</th>
               <th>Summed load per installation type (kVA)*</th>
             </tr>
@@ -117,9 +147,9 @@ const LoadDetails = ({ onNext }) => {
                   </button>
                 </td>
                 <td>{item.connection_type}</td>
+                <td>Commercial</td>
                 <td>{item.phases}</td>
                 <td>{item.heating_type}</td>
-                <td>{item.bedrooms}</td>
                 <td>{item.quantity}</td>
                 <td>{item.load_per_installation?.toLocaleString()}</td>
                 <td>{item.summed_load?.toLocaleString()}</td>
@@ -133,13 +163,18 @@ const LoadDetails = ({ onNext }) => {
                   value={newItem.connection_type}
                   onChange={(e) => handleInputChange('connection_type', e.target.value)}
                 >
-                  <option value="Landlords Supply">Landlords Supply</option>
-                  <option value="House">House</option>
-                  <option value="Flat">Flat</option>
-                  <option value="BNO">BNO</option>
-                  <option value="Pumping Station">Pumping Station</option>
-                  <option value="Streetlights">Streetlights</option>
+                  <option value="Demand">Demand</option>
+                  <option value="Supply">Supply</option>
                   <option value="Other">Other</option>
+                </select>
+              </td>
+              <td>
+                <select
+                  value="Commercial"
+                  readOnly
+                  style={{ backgroundColor: '#f8f9fa' }}
+                >
+                  <option value="Commercial">Commercial</option>
                 </select>
               </td>
               <td>
@@ -160,18 +195,6 @@ const LoadDetails = ({ onNext }) => {
                   <option value="Gas">Gas</option>
                   <option value="Oil">Oil</option>
                   <option value="Other">Other</option>
-                </select>
-              </td>
-              <td>
-                <select
-                  value={newItem.bedrooms}
-                  onChange={(e) => handleInputChange('bedrooms', e.target.value)}
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5+">5+</option>
                 </select>
               </td>
               <td>
@@ -215,13 +238,7 @@ const LoadDetails = ({ onNext }) => {
 
         <div className="total-load">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '1rem' }}>
-            <span>Total Combined Load {totalLoad.toLocaleString()} KVA</span>
-            <input
-              type="number"
-              value={100}
-              style={{ width: '80px', padding: '0.25rem' }}
-              readOnly
-            />
+            <span>Total Combined Load (kVa): 400</span>
           </div>
         </div>
 

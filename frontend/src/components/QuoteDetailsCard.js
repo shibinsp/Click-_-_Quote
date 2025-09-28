@@ -1,6 +1,6 @@
 import React from 'react';
 
-const QuoteDetailsCard = ({ quote, onProceedWithQuote, onCloneQuote }) => {
+const QuoteDetailsCard = ({ quote, onProceedWithQuote, title = "Highest Validity Quote" }) => {
   if (!quote) return null;
 
   const handleProceedWithQuote = () => {
@@ -49,7 +49,7 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, onCloneQuote }) => {
             fontSize: '1.25rem',
             fontWeight: 'bold'
           }}>
-            🏆 Highest Validity Quote
+            🏆 {title}
           </h3>
           <p style={{ 
             margin: '0.25rem 0 0 0', 
@@ -212,10 +212,9 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, onCloneQuote }) => {
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Action Button */}
       <div style={{
         display: 'flex',
-        gap: '2rem',
         justifyContent: 'center',
         alignItems: 'center'
       }}>
@@ -243,32 +242,6 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, onCloneQuote }) => {
           }}
         >
           ✅ Proceed with Existing Quote
-        </button>
-        
-        <button
-          onClick={() => onCloneQuote(quote)}
-          style={{
-            background: '#007bff',
-            color: 'white',
-            border: 'none',
-            padding: '0.75rem 2rem',
-            borderRadius: '6px',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-            boxShadow: '0 2px 4px rgba(0,123,255,0.3)',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseOver={(e) => {
-            e.target.style.background = '#0056b3';
-            e.target.style.transform = 'translateY(-1px)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.background = '#007bff';
-            e.target.style.transform = 'translateY(0)';
-          }}
-        >
-          📋 Clone This Quote
         </button>
       </div>
     </div>

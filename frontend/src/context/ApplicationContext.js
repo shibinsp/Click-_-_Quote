@@ -133,6 +133,7 @@ export const ApplicationProvider = ({ children }) => {
     setApplicationData,
     applicationId,
     loadItems,
+    setLoadItems,
     createApplication,
     updateApplication,
     loadApplication,

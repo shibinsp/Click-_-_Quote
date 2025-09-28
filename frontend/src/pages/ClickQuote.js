@@ -31,8 +31,9 @@ const ClickQuote = ({ onNext }) => {
       // Geocode the postcode to get coordinates
       geocodePostcode(applicationData.site_address.postcode);
       
-      // Load quotations for TW3 postcode
-      if (applicationData.site_address.postcode.toUpperCase().startsWith('TW3')) {
+      // Load quotations for TW3 or TW14 postcodes
+      if (applicationData.site_address.postcode.toUpperCase().startsWith('TW3') || 
+          applicationData.site_address.postcode.toUpperCase().includes('TW14')) {
         loadQuotations(applicationData.site_address.postcode);
       }
     }
@@ -142,11 +143,12 @@ You can now proceed to the next step.
       // Update the current postcode
       setPostcode(searchPostcode.trim());
       
-      // Load quotations if it's a TW3 postcode
-      if (searchPostcode.trim().toUpperCase().startsWith('TW3')) {
+      // Load quotations if it's a TW3 or TW14 postcode
+      if (searchPostcode.trim().toUpperCase().startsWith('TW3') || 
+          searchPostcode.trim().toUpperCase().includes('TW14')) {
         loadQuotations(searchPostcode.trim());
       } else {
-        // Clear quotations for non-TW3 postcodes
+        // Clear quotations for non-TW3/TW14 postcodes
         setQuotations([]);
       }
       
@@ -345,7 +347,7 @@ You can now proceed to the next step.
       `);
       
       // Navigate to next page
-      navigate('/project-details');
+      navigate('/summary');
       if (onNext) onNext();
     } catch (error) {
       console.error('Error saving click & quote data:', error);
@@ -357,7 +359,7 @@ You can now proceed to the next step.
     e.preventDefault();
     try {
       await updateApplication('click_quote_data', mapData);
-      navigate('/project-details');
+      navigate('/summary');
       onNext();
     } catch (error) {
       console.error('Error saving click & quote data:', error);
@@ -454,7 +456,7 @@ You can now proceed to the next step.
               <button 
                 className="map-control-btn" 
                 title="Back"
-                onClick={() => navigate('/other-contact')}
+                onClick={() => navigate('/upload-docs')}
               >
                 ←
               </button>
@@ -596,14 +598,34 @@ You can now proceed to the next step.
         </div>
       </div>
 
-      {/* Highest Validity Quote Card - Under Map */}
-      {highestValidityQuote && (
+      {/* All Available Quotations - Under Map */}
+      {quotations.length > 0 && (
         <div style={{ marginTop: '0.5rem', marginBottom: '0.5rem' }}>
-          <QuoteDetailsCard
-            quote={highestValidityQuote}
-            onProceedWithQuote={handleProceedWithQuote}
-            onCloneQuote={handleCloneQuote}
-          />
+          <h3 style={{ 
+            margin: '0 0 1rem 0', 
+            color: '#007bff', 
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            textAlign: 'center'
+          }}>
+            📋 Available Quotations ({quotations.length})
+          </h3>
+          
+          {/* Display all quotations */}
+          {quotations.map((quote, index) => {
+            const isHighestValidity = quote.qid === highestValidityQuote?.qid;
+            const title = isHighestValidity ? "Highest Validity Quote" : `Quote ${index + 1} - ${quote.customerName}`;
+            
+            return (
+              <div key={quote.qid} style={{ marginBottom: '1.5rem' }}>
+                <QuoteDetailsCard
+                  quote={quote}
+                  onProceedWithQuote={handleProceedWithQuote}
+                  title={title}
+                />
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -666,7 +688,7 @@ You can now proceed to the next step.
 
       <form onSubmit={handleSubmit}>
         <div className="form-actions">
-          <button type="button" className="btn btn-secondary" onClick={() => navigate('/other-contact')}>
+          <button type="button" className="btn btn-secondary" onClick={() => navigate('/upload-docs')}>
             Previous
           </button>
           <button type="submit" className="btn btn-primary">

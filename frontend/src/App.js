@@ -4,6 +4,7 @@ import Header from './components/Header';
 import ProgressBar from './components/ProgressBar';
 import ApplicantDetails from './pages/ApplicantDetails';
 import GeneralInformation from './pages/GeneralInformation';
+import JobDetails from './pages/JobDetails';
 import SiteAddress from './pages/SiteAddress';
 import LoadDetails from './pages/LoadDetails';
 import OtherContact from './pages/OtherContact';
@@ -22,14 +23,15 @@ function AppContent() {
   
   const steps = [
     'Applicant Details',
-    'General Information', 
+    'General Information',
+    'Job Details',
     'Site Address',
     'Load Details',
     'Other Contact',
-    'Click & Quote',
     'Project Details',
     'Auto Quote Eligibility',
     'Upload Docs',
+    'Click & Quote',
     'Summary',
     'Submitted'
   ];
@@ -39,15 +41,16 @@ function AppContent() {
     const pathToStepMap = {
       '/': 0,
       '/general-information': 1,
-      '/site-address': 2,
-      '/load-details': 3,
-      '/other-contact': 4,
-      '/click-quote': 5,
+      '/job-details': 2,
+      '/site-address': 3,
+      '/load-details': 4,
+      '/other-contact': 5,
       '/project-details': 6,
       '/auto-quote-eligibility': 7,
       '/upload-docs': 8,
-      '/summary': 9,
-      '/submitted': 10
+      '/click-quote': 9,
+      '/summary': 10,
+      '/submitted': 11
     };
     
     const step = pathToStepMap[location.pathname] || 0;
@@ -62,14 +65,15 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<ApplicantDetails onNext={() => setCurrentStep(1)} />} />
           <Route path="/general-information" element={<GeneralInformation onNext={() => setCurrentStep(2)} />} />
-          <Route path="/site-address" element={<SiteAddress onNext={() => setCurrentStep(3)} />} />
-          <Route path="/load-details" element={<LoadDetails onNext={() => setCurrentStep(4)} />} />
-          <Route path="/other-contact" element={<OtherContact onNext={() => setCurrentStep(5)} />} />
-          <Route path="/click-quote" element={<ClickQuote onNext={() => setCurrentStep(6)} />} />
+          <Route path="/job-details" element={<JobDetails onNext={() => setCurrentStep(3)} />} />
+          <Route path="/site-address" element={<SiteAddress onNext={() => setCurrentStep(4)} />} />
+          <Route path="/load-details" element={<LoadDetails onNext={() => setCurrentStep(5)} />} />
+          <Route path="/other-contact" element={<OtherContact onNext={() => setCurrentStep(6)} />} />
           <Route path="/project-details" element={<ProjectDetails onNext={() => setCurrentStep(7)} />} />
           <Route path="/auto-quote-eligibility" element={<AutoQuoteEligibility onNext={() => setCurrentStep(8)} />} />
           <Route path="/upload-docs" element={<UploadDocs onNext={() => setCurrentStep(9)} />} />
-          <Route path="/summary" element={<Summary onNext={() => setCurrentStep(10)} />} />
+          <Route path="/click-quote" element={<ClickQuote onNext={() => setCurrentStep(10)} />} />
+          <Route path="/summary" element={<Summary onNext={() => setCurrentStep(11)} />} />
           <Route path="/submitted" element={<Submitted />} />
         </Routes>
       </main>

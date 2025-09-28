@@ -232,7 +232,7 @@ const Summary = ({ onNext }) => {
         )}
 
         <div className="form-actions">
-          <button type="button" className="btn btn-secondary" onClick={() => navigate('/upload-docs')}>
+          <button type="button" className="btn btn-secondary" onClick={() => navigate('/click-quote')}>
             Previous
           </button>
           <button type="submit" className="btn btn-primary" disabled={isSubmitting}>

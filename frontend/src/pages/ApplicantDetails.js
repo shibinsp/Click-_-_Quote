@@ -7,16 +7,27 @@ const ApplicantDetails = ({ onNext }) => {
   const { updateApplication, applicationData } = useApplication();
   
   const [formData, setFormData] = useState({
-    authorisedRepresentative: false,
-    principalContractor: false,
-    principalDesigner: false,
-    quoteMethod: 'Email',
-    contactMethod: 'Email',
-    referenceNumber: '',
-    hasGridReference: 'No',
-    applyingOnBehalf: 'No',
-    hadQuoteBefore: 'No',
-    connectionDate: ''
+    // Company/Individual Information
+    applicationType: 'Company',
+    companyName: 'Smart Connections',
+    title: 'Mr.',
+    firstName: 'Andrew',
+    lastName: 'Hamilton',
+    email: 'Andrew.h@smartconnections.co.uk',
+    mobile: '07555544444',
+    
+    // Address Information
+    street: '12',
+    street2: 'Ormsby',
+    street3: 'Stanley Road',
+    city: 'Sutton',
+    postcode: 'SM2 6TJ',
+    state: 'Surrey',
+    country: 'United Kingdom',
+    
+    // Address Options
+    siteSameAsCorrespondence: false,
+    invoiceSameAsCorrespondence: true
   });
 
   // Load existing data when component mounts
@@ -58,244 +69,226 @@ const ApplicantDetails = ({ onNext }) => {
     }
   };
 
+
   return (
     <div className="form-container">
       <h1 className="form-title">Applicant Details</h1>
       
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label className="form-label">
-            Do you have an Authorised Representative?
-          </label>
-          <div className="toggle-switch">
+        {/* Company/Individual Information Section */}
+        <div className="form-section">
+          <h2 className="section-title">Applicant's Details</h2>
+          
+          <div className="form-group">
+            <label className="form-label">
+              Are you applying on behalf of a company OR as an individual?
+            </label>
+            <select
+              className="form-select"
+              value={formData.applicationType}
+              onChange={(e) => handleInputChange('applicationType', e.target.value)}
+            >
+              <option value="Company">Company</option>
+              <option value="Individual">Individual</option>
+            </select>
+          </div>
+
+          {formData.applicationType === 'Company' && (
+            <>
+              <div className="form-group">
+                <label className="form-label">Company Name</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={formData.companyName}
+                  onChange={(e) => handleInputChange('companyName', e.target.value)}
+                  placeholder="Enter company name"
+                />
+              </div>
+            </>
+          )}
+
+          <div className="form-group">
+            <label className="form-label">Title</label>
+            <select
+              className="form-select"
+              value={formData.title}
+              onChange={(e) => handleInputChange('title', e.target.value)}
+            >
+              <option value="Mr.">Mr.</option>
+              <option value="Mrs.">Mrs.</option>
+              <option value="Ms.">Ms.</option>
+              <option value="Dr.">Dr.</option>
+              <option value="Prof.">Prof.</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">First Name</label>
             <input
-              type="checkbox"
-              checked={formData.authorisedRepresentative}
-              onChange={() => handleToggle('authorisedRepresentative')}
+              type="text"
+              className="form-input"
+              value={formData.firstName}
+              onChange={(e) => handleInputChange('firstName', e.target.value)}
+              placeholder="Enter first name"
             />
-            <span className="toggle-slider"></span>
           </div>
-          <span style={{ marginLeft: '1rem' }}>
-            {formData.authorisedRepresentative ? 'Yes' : 'No'}
-          </span>
-        </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            Principal Contractor Details
-          </label>
-          <div className="toggle-switch">
+          <div className="form-group">
+            <label className="form-label">Last Name</label>
             <input
-              type="checkbox"
-              checked={formData.principalContractor}
-              onChange={() => handleToggle('principalContractor')}
+              type="text"
+              className="form-input"
+              value={formData.lastName}
+              onChange={(e) => handleInputChange('lastName', e.target.value)}
+              placeholder="Enter last name"
             />
-            <span className="toggle-slider"></span>
           </div>
-          <span style={{ marginLeft: '1rem' }}>
-            {formData.principalContractor ? 'Yes' : 'No'}
-          </span>
-        </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            Principal Designer Details
-          </label>
-          <div className="toggle-switch">
+          <div className="form-group">
+            <label className="form-label">Email</label>
             <input
-              type="checkbox"
-              checked={formData.principalDesigner}
-              onChange={() => handleToggle('principalDesigner')}
+              type="email"
+              className="form-input"
+              value={formData.email}
+              onChange={(e) => handleInputChange('email', e.target.value)}
+              placeholder="Enter email address"
             />
-            <span className="toggle-slider"></span>
           </div>
-          <span style={{ marginLeft: '1rem' }}>
-            {formData.principalDesigner ? 'Yes' : 'No'}
-          </span>
-        </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            How would you like to receive your quote?
-          </label>
-          <select
-            className="form-select"
-            value={formData.quoteMethod}
-            onChange={(e) => handleInputChange('quoteMethod', e.target.value)}
-          >
-            <option value="Email">Email</option>
-            <option value="Post">Post</option>
-            <option value="Phone">Phone</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">
-            How would you like us to contact you regarding job updates, information and appointments?
-          </label>
-          <div className="radio-group">
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="email"
-                name="contactMethod"
-                value="Email"
-                checked={formData.contactMethod === 'Email'}
-                onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              />
-              <label htmlFor="email">Email</label>
-            </div>
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="text"
-                name="contactMethod"
-                value="Text message"
-                checked={formData.contactMethod === 'Text message'}
-                onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              />
-              <label htmlFor="text">Text message</label>
-            </div>
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="telephone"
-                name="contactMethod"
-                value="Telephone"
-                checked={formData.contactMethod === 'Telephone'}
-                onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              />
-              <label htmlFor="telephone">Telephone</label>
-            </div>
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="post"
-                name="contactMethod"
-                value="Post"
-                checked={formData.contactMethod === 'Post'}
-                onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              />
-              <label htmlFor="post">Post</label>
-            </div>
+          <div className="form-group">
+            <label className="form-label">Mobile</label>
+            <input
+              type="tel"
+              className="form-input"
+              value={formData.mobile}
+              onChange={(e) => handleInputChange('mobile', e.target.value)}
+              placeholder="Enter mobile number"
+            />
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            If you have your own reference number to track jobs please enter here
-            <span className="required">*</span>
-          </label>
-          <input
-            type="text"
-            className="form-input"
-            value={formData.referenceNumber}
-            onChange={(e) => handleInputChange('referenceNumber', e.target.value)}
-            placeholder="Enter reference number"
-          />
-        </div>
+        {/* Address Information Section */}
+        <div className="form-section">
+          <h2 className="section-title">Correspondence Address</h2>
+          
+          <div className="form-group">
+            <label className="form-label">Street</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.street}
+              onChange={(e) => handleInputChange('street', e.target.value)}
+              placeholder="Enter street number/name"
+            />
+          </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            Do you have a grid reference or a What3Words to help us locate your site?
-          </label>
-          <div className="radio-group">
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="gridYes"
-                name="hasGridReference"
-                value="Yes"
-                checked={formData.hasGridReference === 'Yes'}
-                onChange={(e) => handleInputChange('hasGridReference', e.target.value)}
-              />
-              <label htmlFor="gridYes">Yes</label>
-            </div>
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="gridNo"
-                name="hasGridReference"
-                value="No"
-                checked={formData.hasGridReference === 'No'}
-                onChange={(e) => handleInputChange('hasGridReference', e.target.value)}
-              />
-              <label htmlFor="gridNo">No</label>
-            </div>
+          <div className="form-group">
+            <label className="form-label">Street 2</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.street2}
+              onChange={(e) => handleInputChange('street2', e.target.value)}
+              placeholder="Enter street 2"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Street 3</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.street3}
+              onChange={(e) => handleInputChange('street3', e.target.value)}
+              placeholder="Enter street 3"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">City</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.city}
+              onChange={(e) => handleInputChange('city', e.target.value)}
+              placeholder="Enter city"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Postcode</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.postcode}
+              onChange={(e) => handleInputChange('postcode', e.target.value)}
+              placeholder="Enter postcode"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">State</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.state}
+              onChange={(e) => handleInputChange('state', e.target.value)}
+              placeholder="Enter state"
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Country</label>
+            <input
+              type="text"
+              className="form-input"
+              value={formData.country}
+              onChange={(e) => handleInputChange('country', e.target.value)}
+              placeholder="Enter country"
+            />
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            Are you applying on behalf of someone else?
-          </label>
-          <div className="radio-group">
-            <div className="radio-item">
+        {/* Address Options Section */}
+        <div className="form-section">
+          <h2 className="section-title">Address Options</h2>
+          
+          <div className="form-group">
+            <label className="form-label">
+              Is the site address the same as the correspondence address above?
+            </label>
+            <div className="toggle-switch">
               <input
-                type="radio"
-                id="behalfYes"
-                name="applyingOnBehalf"
-                value="Yes"
-                checked={formData.applyingOnBehalf === 'Yes'}
-                onChange={(e) => handleInputChange('applyingOnBehalf', e.target.value)}
+                type="checkbox"
+                checked={formData.siteSameAsCorrespondence}
+                onChange={() => handleToggle('siteSameAsCorrespondence')}
               />
-              <label htmlFor="behalfYes">Yes</label>
+              <span className="toggle-slider"></span>
             </div>
-            <div className="radio-item">
+            <span style={{ marginLeft: '1rem' }}>
+              {formData.siteSameAsCorrespondence ? 'Yes' : 'No'}
+            </span>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">
+              Is the invoice address the same as the correspondence address above?
+            </label>
+            <div className="toggle-switch">
               <input
-                type="radio"
-                id="behalfNo"
-                name="applyingOnBehalf"
-                value="No"
-                checked={formData.applyingOnBehalf === 'No'}
-                onChange={(e) => handleInputChange('applyingOnBehalf', e.target.value)}
+                type="checkbox"
+                checked={formData.invoiceSameAsCorrespondence}
+                onChange={() => handleToggle('invoiceSameAsCorrespondence')}
               />
-              <label htmlFor="behalfNo">No</label>
+              <span className="toggle-slider"></span>
             </div>
+            <span style={{ marginLeft: '1rem' }}>
+              {formData.invoiceSameAsCorrespondence ? 'Yes' : 'No'}
+            </span>
           </div>
         </div>
 
-        <div className="form-group">
-          <label className="form-label">
-            Have you had a quote from us at this address before?
-          </label>
-          <div className="radio-group">
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="quoteYes"
-                name="hadQuoteBefore"
-                value="Yes"
-                checked={formData.hadQuoteBefore === 'Yes'}
-                onChange={(e) => handleInputChange('hadQuoteBefore', e.target.value)}
-              />
-              <label htmlFor="quoteYes">Yes</label>
-            </div>
-            <div className="radio-item">
-              <input
-                type="radio"
-                id="quoteNo"
-                name="hadQuoteBefore"
-                value="No"
-                checked={formData.hadQuoteBefore === 'No'}
-                onChange={(e) => handleInputChange('hadQuoteBefore', e.target.value)}
-              />
-              <label htmlFor="quoteNo">No</label>
-            </div>
-          </div>
-        </div>
-
-        <div className="form-group">
-          <label className="form-label">
-            When would you like your power connected?
-          </label>
-          <input
-            type="date"
-            className="form-input"
-            value={formData.connectionDate}
-            onChange={(e) => handleInputChange('connectionDate', e.target.value)}
-          />
-        </div>
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary" disabled>

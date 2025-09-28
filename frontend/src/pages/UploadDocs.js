@@ -46,7 +46,7 @@ const UploadDocs = ({ onNext }) => {
     e.preventDefault();
     try {
       await updateApplication('upload_docs', formData);
-      navigate('/summary');
+      navigate('/click-quote');
       onNext();
     } catch (error) {
       console.error('Error saving uploaded documents:', error);

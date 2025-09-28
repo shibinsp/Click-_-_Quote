@@ -9,9 +9,9 @@ const GeneralInformation = ({ onNext }) => {
   const [formData, setFormData] = useState({
     highwaysServices: 'No',
     quoteType: 'Formal Quote',
-    serviceType: 'New Connection - Demand or Generation',
-    propertyUse: 'Domestic',
-    metersNeeded: ''
+    serviceType: 'New Connection',
+    propertyUse: 'Commercial',
+    metersNeeded: 'More than one meter'
   });
 
   // Load existing data when component mounts
@@ -37,12 +37,13 @@ const GeneralInformation = ({ onNext }) => {
     e.preventDefault();
     try {
       await updateApplication('general_information', formData);
-      navigate('/site-address');
+      navigate('/job-details');
       onNext();
     } catch (error) {
       console.error('Error saving general information:', error);
     }
   };
+
 
   return (
     <div className="form-container">
@@ -105,11 +106,11 @@ const GeneralInformation = ({ onNext }) => {
                 type="radio"
                 id="newConnection"
                 name="serviceType"
-                value="New Connection - Demand or Generation"
-                checked={formData.serviceType === 'New Connection - Demand or Generation'}
+                value="New Connection"
+                checked={formData.serviceType === 'New Connection'}
                 onChange={(e) => handleInputChange('serviceType', e.target.value)}
               />
-              <label htmlFor="newConnection">New Connection - Demand or Generation</label>
+              <label htmlFor="newConnection">New Connection</label>
             </div>
             <div className="radio-item">
               <input
@@ -179,7 +180,7 @@ const GeneralInformation = ({ onNext }) => {
             </div>
           </div>
           
-          {formData.serviceType === 'New Connection - Demand or Generation' && (
+          {formData.serviceType === 'New Connection' && (
             <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '4px' }}>
               <p><strong>New Connection:</strong> New permanent connection of an incoming supply or installations of large generation systems, e.g. solar photovoltaic, battery storage.</p>
             </div>
@@ -209,15 +210,16 @@ const GeneralInformation = ({ onNext }) => {
             How many meters do you need at the property?
             <span className="required">*</span>
           </label>
-          <input
-            type="number"
-            className="form-input"
+          <select
+            className="form-select"
             value={formData.metersNeeded}
             onChange={(e) => handleInputChange('metersNeeded', e.target.value)}
-            placeholder="Enter number of meters"
-            min="1"
             required
-          />
+          >
+            <option value="">Select number of meters</option>
+            <option value="One meter">One meter</option>
+            <option value="More than one meter">More than one meter</option>
+          </select>
         </div>
 
         <div className="form-actions">
