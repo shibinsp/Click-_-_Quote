@@ -29,7 +29,7 @@ export const ApplicationProvider = ({ children }) => {
   const [loadItems, setLoadItems] = useState([]);
   const debounceTimeoutRef = useRef(null);
 
-  const API_BASE_URL = 'http://localhost:5000/api';
+  const API_BASE_URL = 'http://localhost:4321/api';
 
   // Create new application
   const createApplication = async () => {

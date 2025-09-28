@@ -6,14 +6,14 @@
 
 1. **Start the Backend:**
    - Double-click `start_backend.bat`
-   - Wait for the backend to start (you'll see "Running on http://127.0.0.1:5000")
+   - Wait for the backend to start (you'll see "Running on http://127.0.0.1:4321")
 
 2. **Start the Frontend:**
    - Double-click `start_frontend.bat`
-   - Wait for the frontend to start (you'll see "Local: http://localhost:3000")
+   - Wait for the frontend to start (you'll see "Local: http://localhost:1234")
 
 3. **Access the Application:**
-   - Open your browser and go to `http://localhost:3000`
+   - Open your browser and go to `http://localhost:1234`
 
 ### macOS/Linux Users
 
@@ -28,7 +28,7 @@
    ```
 
 3. **Access the Application:**
-   - Open your browser and go to `http://localhost:3000`
+   - Open your browser and go to `http://localhost:1234`
 
 ## Manual Setup
 
@@ -71,7 +71,7 @@
 
    You should see:
    ```
-   * Running on http://127.0.0.1:5000
+   * Running on http://127.0.0.1:4321
    * Debug mode: on
    ```
 
@@ -95,7 +95,7 @@
 
    You should see:
    ```
-   Local:            http://localhost:3000
+   Local:            http://localhost:1234
    On Your Network:  http://192.168.x.x:3000
    ```
 
@@ -104,8 +104,8 @@
 ### Common Issues
 
 1. **Port Already in Use:**
-   - Backend (port 5000): Change the port in `backend/app.py`
-   - Frontend (port 3000): The terminal will ask if you want to use a different port
+   - Backend (port 4321): Change the port in `backend/app.py`
+   - Frontend (port 1234): The terminal will ask if you want to use a different port
 
 2. **Python Not Found:**
    - Make sure Python is installed and added to your PATH
@@ -120,7 +120,7 @@
    - If you encounter database errors, delete `backend/applications.db` and restart
 
 5. **CORS Errors:**
-   - Make sure the backend is running on port 5000
+   - Make sure the backend is running on port 4321
    - Check that Flask-CORS is properly installed
 
 ### Development Tips
@@ -194,6 +194,6 @@ If you encounter any issues:
 1. Check the console/terminal for error messages
 2. Ensure all dependencies are installed
 3. Verify that both frontend and backend are running
-4. Check that ports 3000 and 5000 are available
+4. Check that ports 1234 and 4321 are available
 
 For additional help, refer to the main README.md file or contact the development team.

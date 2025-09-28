@@ -100,7 +100,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-The backend will be available at `http://localhost:5000`
+The backend will be available at `http://localhost:4321`
 
 ### Frontend Setup
 
@@ -119,7 +119,7 @@ npm install
 npm start
 ```
 
-The frontend will be available at `http://localhost:3000`
+The frontend will be available at `http://localhost:1234`
 
 ## API Endpoints
 
