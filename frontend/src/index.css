@@ -100,111 +100,194 @@ code {
   align-items: center;
   overflow-x: auto;
   position: relative;
+  height: 50px;
 }
 
 .step {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  white-space: nowrap;
   position: relative;
-  min-width: 120px;
-  height: 40px;
-  border-radius: 0;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3);
+  height: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: white;
   transition: all 0.3s;
-  border: 1px solid rgba(0,0,0,0.1);
+  z-index: 1;
 }
 
-/* Current step - Dark blue with gradient */
-.step.current {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
-  color: white;
-  border-radius: 6px 0 0 6px;
+/* Register button - Blue with rounded left edge */
+.step.register {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  padding: 0 1.5rem 0 1rem;
+  border-radius: 8px 0 0 8px;
+  min-width: 140px;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.2);
-  border: 1px solid #1e40af;
+  border: 1px solid #1d4ed8;
+  transition: all 0.3s ease;
 }
 
-/* Completed steps - Bright orange */
-.step.completed {
-  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
-  color: white;
-  border-radius: 0;
+.step.register.completed {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.step.register:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-1px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.2), 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+/* Chevron steps - Orange with chevron shape */
+.step.chevron {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  padding: 0 2rem 0 1.5rem;
+  min-width: 120px;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.2);
-  border: 1px solid #ff6b35;
+  border: 1px solid #ea580c;
+  clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+  transition: all 0.3s ease;
 }
 
-/* Next step - Light blue */
-.step.next {
+.step.chevron.completed {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.step.chevron:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+  transform: translateY(-1px);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.25), inset 0 -1px 0 rgba(255,255,255,0.2), 0 4px 8px rgba(249, 115, 22, 0.3);
+}
+
+/* Button steps - Thin gray rectangles */
+.step.button {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #374151;
+  padding: 0 1rem;
+  min-width: 100px;
+  height: 35px;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3);
+  border: 1px solid #d1d5db;
+  margin-top: 7.5px;
+  transition: all 0.3s ease;
+}
+
+.step.button.pending {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #6b7280;
+}
+
+.step.button:hover {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.15), inset 0 -1px 0 rgba(255,255,255,0.3), 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step.button.current {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   color: #1e40af;
   border: 1px solid #93c5fd;
-  border-radius: 0 6px 6px 0;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3);
-}
-
-/* Pending steps - Light grey */
-.step.pending {
-  background: #f8f9fa;
-  color: #6c757d;
-  border: 1px solid #dee2e6;
-  border-radius: 0;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3), 0 2px 4px rgba(59, 130, 246, 0.3);
 }
 
 /* Chevron separators */
 .chevron-separator {
-  width: 0;
-  height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 20px solid white;
-  border-bottom: 20px solid white;
   position: relative;
   z-index: 2;
   margin: 0 -1px;
-  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
 }
 
-.chevron-separator::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: -20px;
+.chevron-separator:hover {
+  transform: scale(1.1);
+}
+
+/* Register to Chevron separator */
+.chevron-separator.register-to-chevron {
   width: 0;
   height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 20px solid #e5e7eb;
-  border-bottom: 20px solid #e5e7eb;
-  z-index: -1;
+  border-left: 15px solid #2563eb;
+  border-right: 15px solid transparent;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
 }
 
-.chevron-separator::after {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: -20px;
+/* Chevron to Chevron separator */
+.chevron-separator.chevron-to-chevron {
   width: 0;
   height: 0;
-  border-left: 20px solid transparent;
-  border-right: 20px solid transparent;
-  border-top: 20px solid #f3f4f6;
-  border-bottom: 20px solid #f3f4f6;
-  z-index: -2;
+  border-left: 15px solid #f97316;
+  border-right: 15px solid transparent;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
 }
 
-/* Checkmark styling */
+/* Chevron to Button separator */
+.chevron-separator.chevron-to-button {
+  width: 0;
+  height: 0;
+  border-left: 15px solid #f97316;
+  border-right: 15px solid transparent;
+  border-top: 25px solid transparent;
+  border-bottom: 25px solid transparent;
+}
+
+/* Button to Button separator */
+.chevron-separator.button-to-button {
+  width: 8px;
+  height: 35px;
+  background: #e5e7eb;
+  margin-top: 7.5px;
+  border-radius: 2px;
+}
+
+/* Icons and text styling */
+.register-icon {
+  font-size: 1rem;
+  margin-right: 0.5rem;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s infinite;
+}
+
 .checkmark {
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
   margin-right: 0.5rem;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .step-text {
   font-weight: 600;
+  text-align: center;
 }
 
 .main-content {

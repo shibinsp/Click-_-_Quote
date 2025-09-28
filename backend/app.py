@@ -11,8 +11,9 @@ CORS(app)
 # Database initialization
 def init_db():
     # Create data directory if it doesn't exist
-    os.makedirs('/app/data', exist_ok=True)
-    conn = sqlite3.connect('/app/data/applications.db')
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    conn = sqlite3.connect(os.path.join(data_dir, 'applications.db'))
     cursor = conn.cursor()
     
     # Create applications table
@@ -57,7 +58,8 @@ def init_db():
 @app.route('/api/applications', methods=['POST'])
 def create_application():
     data = request.json
-    conn = sqlite3.connect('/app/data/applications.db')
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    conn = sqlite3.connect(os.path.join(data_dir, 'applications.db'))
     cursor = conn.cursor()
     
     cursor.execute('''
@@ -86,7 +88,8 @@ def create_application():
 
 @app.route('/api/applications/<int:app_id>', methods=['GET', 'PUT'])
 def handle_application(app_id):
-    conn = sqlite3.connect('/app/data/applications.db')
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    conn = sqlite3.connect(os.path.join(data_dir, 'applications.db'))
     cursor = conn.cursor()
     
     if request.method == 'GET':
@@ -141,7 +144,8 @@ def handle_application(app_id):
 
 @app.route('/api/load-items/<int:app_id>', methods=['GET', 'POST', 'DELETE'])
 def handle_load_items(app_id):
-    conn = sqlite3.connect('/app/data/applications.db')
+    data_dir = os.path.join(os.path.dirname(__file__), 'data')
+    conn = sqlite3.connect(os.path.join(data_dir, 'applications.db'))
     cursor = conn.cursor()
     
     if request.method == 'GET':
