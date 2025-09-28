@@ -1,0 +1,30 @@
+{
+  "quoteId": "TW3-001",
+  "postcode": "TW3",
+  "customerName": "Sample Customer Ltd",
+  "projectType": "New Connection",
+  "connectionType": "Three Phase",
+  "loadRequirement": "150 kVA",
+  "estimatedCost": 12500,
+  "currency": "GBP",
+  "validUntil": "2025-12-31",
+  "quoteDate": "2025-09-28",
+  "description": "New three-phase connection for commercial premises",
+  "breakdown": {
+    "connectionFee": 3500,
+    "cableInstallation": 4500,
+    "substationWork": 2500,
+    "permitsAndLicenses": 800,
+    "testingAndCommissioning": 1200
+  },
+  "terms": {
+    "paymentTerms": "50% upfront, 50% on completion",
+    "warranty": "2 years on all equipment",
+    "completionTime": "8-12 weeks from start date"
+  },
+  "contact": {
+    "engineer": "********",
+    "email": "*******@ukpowernetworks.co.uk",
+    "phone": "##########"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "quoteId": "TW3-003",
+  "postcode": "TW3",
+  "customerName": "Industrial Complex",
+  "projectType": "New Connection",
+  "connectionType": "Three Phase",
+  "loadRequirement": "500 kVA",
+  "estimatedCost": 45000,
+  "currency": "GBP",
+  "validUntil": "2026-01-15",
+  "quoteDate": "2025-09-20",
+  "description": "High voltage connection for industrial manufacturing facility",
+  "breakdown": {
+    "connectionFee": 15000,
+    "cableInstallation": 18000,
+    "substationWork": 8000,
+    "permitsAndLicenses": 2000,
+    "testingAndCommissioning": 2000
+  },
+  "terms": {
+    "paymentTerms": "30% upfront, 40% at 50% completion, 30% on completion",
+    "warranty": "3 years on all equipment",
+    "completionTime": "16-20 weeks from start date"
+  },
+  "contact": {
+    "engineer": "********",
+    "email": "*******@ukpowernetworks.co.uk",
+    "phone": "##########"
+  }
+}

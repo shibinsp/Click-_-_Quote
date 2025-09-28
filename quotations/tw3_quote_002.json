@@ -1,0 +1,30 @@
+{
+  "quoteId": "TW3-002",
+  "postcode": "TW3",
+  "customerName": "Residential Development",
+  "projectType": "Upgrade",
+  "connectionType": "Single Phase",
+  "loadRequirement": "25 kVA",
+  "estimatedCost": 3200,
+  "currency": "GBP",
+  "validUntil": "2025-12-15",
+  "quoteDate": "2025-09-25",
+  "description": "Upgrade existing single-phase connection for residential development",
+  "breakdown": {
+    "upgradeFee": 1200,
+    "cableReplacement": 800,
+    "meterInstallation": 400,
+    "permitsAndLicenses": 200,
+    "testingAndCommissioning": 600
+  },
+  "terms": {
+    "paymentTerms": "Full payment on completion",
+    "warranty": "1 year on all equipment",
+    "completionTime": "4-6 weeks from start date"
+  },
+  "contact": {
+    "engineer": "********",
+    "email": "*******@ukpowernetworks.co.uk",
+    "phone": "##########"
+  }
+}
