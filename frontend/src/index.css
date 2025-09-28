@@ -91,45 +91,120 @@ code {
   z-index: 999;
   background: white;
   padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.steps {
+.steps-container {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
   overflow-x: auto;
+  position: relative;
 }
 
 .step {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
   font-size: 0.9rem;
+  font-weight: 500;
   white-space: nowrap;
+  position: relative;
+  min-width: 120px;
+  height: 40px;
+  border-radius: 0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3);
   transition: all 0.3s;
+  border: 1px solid rgba(0,0,0,0.1);
 }
 
-.step.completed {
-  background: #ff6b35;
-  color: white;
-}
-
+/* Current step - Dark blue with gradient */
 .step.current {
-  background: #007bff;
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
   color: white;
+  border-radius: 6px 0 0 6px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.2);
+  border: 1px solid #1e40af;
 }
 
+/* Completed steps - Bright orange */
+.step.completed {
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  color: white;
+  border-radius: 0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0 rgba(255,255,255,0.2);
+  border: 1px solid #ff6b35;
+}
+
+/* Next step - Light blue */
+.step.next {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+  border-radius: 0 6px 6px 0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), inset 0 -1px 0 rgba(255,255,255,0.3);
+}
+
+/* Pending steps - Light grey */
 .step.pending {
-  background: #e9ecef;
+  background: #f8f9fa;
   color: #6c757d;
+  border: 1px solid #dee2e6;
+  border-radius: 0;
 }
 
-.step-arrow {
-  color: #ff6b35;
+/* Chevron separators */
+.chevron-separator {
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid white;
+  border-bottom: 20px solid white;
+  position: relative;
+  z-index: 2;
+  margin: 0 -1px;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.1);
+}
+
+.chevron-separator::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #e5e7eb;
+  border-bottom: 20px solid #e5e7eb;
+  z-index: -1;
+}
+
+.chevron-separator::after {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 0;
+  height: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #f3f4f6;
+  border-bottom: 20px solid #f3f4f6;
+  z-index: -2;
+}
+
+/* Checkmark styling */
+.checkmark {
+  font-size: 1.2rem;
   font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.step-text {
+  font-weight: 600;
 }
 
 .main-content {
