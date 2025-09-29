@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Header from './components/Header';
 import ProgressBar from './components/ProgressBar';
+import Login from './pages/Login';
 import ApplicantDetails from './pages/ApplicantDetails';
 import GeneralInformation from './pages/GeneralInformation';
 import JobDetails from './pages/JobDetails';
@@ -15,9 +16,11 @@ import UploadDocs from './pages/UploadDocs';
 import Summary from './pages/Summary';
 import Submitted from './pages/Submitted';
 import { ApplicationProvider } from './context/ApplicationContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import './App.css';
 
 function AppContent() {
+  const { isAuthenticated, loading } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const location = useLocation();
   
@@ -57,11 +60,32 @@ function AppContent() {
     setCurrentStep(step);
   }, [location.pathname]);
 
+  // Show loading spinner while checking authentication
+  if (loading) {
     return (
-      <div className="app">
-        <Header />
-        <ProgressBar steps={steps} currentStep={currentStep} />
-        <main className="main-content">
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '1.2rem'
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
+  // Show login page if not authenticated
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  // Show full application if authenticated
+  return (
+    <div className="app">
+      <Header />
+      <ProgressBar steps={steps} currentStep={currentStep} />
+      <main className="main-content">
         <Routes>
           <Route path="/" element={<ApplicantDetails onNext={() => setCurrentStep(1)} />} />
           <Route path="/general-information" element={<GeneralInformation onNext={() => setCurrentStep(2)} />} />
@@ -83,11 +107,13 @@ function AppContent() {
 
 function App() {
   return (
-    <ApplicationProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </ApplicationProvider>
+    <AuthProvider>
+      <ApplicationProvider>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <AppContent />
+        </Router>
+      </ApplicationProvider>
+    </AuthProvider>
   );
 }
 
