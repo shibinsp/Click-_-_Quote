@@ -6,7 +6,7 @@ services:
     image: uk-power-backend:latest
     container_name: uk-power-backend
     ports:
-      - "4321:4321"
+      - "5000:5000"
     volumes:
       - ./backend/data:/app/data
       - ./backend/applications.db:/app/applications.db

@@ -20,7 +20,7 @@ const Login = () => {
     setSuccess('');
 
     try {
-        const response = await fetch('http://localhost:5000/api/send-otp', {
+        const response = await fetch('http://149.102.158.71:5000/api/send-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const Login = () => {
     setError('');
 
     try {
-        const response = await fetch('http://localhost:5000/api/verify-otp', {
+        const response = await fetch('http://149.102.158.71:5000/api/verify-otp', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -23,10 +23,11 @@
 }
 
 .login-logo {
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 80px;
   margin-bottom: 20px;
   border-radius: 8px;
+  object-fit: contain;
 }
 
 .login-header h1 {

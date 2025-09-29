@@ -7,14 +7,62 @@ import os
 import smtplib
 import random
 import string
+import logging
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email_validator import validate_email, EmailNotValidError
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:1234", "http://127.0.0.1:1234"], 
+CORS(app, origins=["http://localhost:1234", "http://127.0.0.1:1234", "http://localhost:3000", "http://149.102.158.71:3000"], 
      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
      allow_headers=["Content-Type", "Authorization"])
+
+# Configure login logging
+def setup_login_logging():
+    """Setup logging for all login-related activities"""
+    # Create logs directory if it doesn't exist
+    log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Create login logger
+    login_logger = logging.getLogger('login_activities')
+    login_logger.setLevel(logging.INFO)
+    
+    # Create file handler for login logs
+    log_file = os.path.join(log_dir, 'login_activities.log')
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(logging.INFO)
+    
+    # Create formatter
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+    
+    # Add handler to logger
+    login_logger.addHandler(file_handler)
+    
+    return login_logger
+
+# Initialize login logger
+login_logger = setup_login_logging()
+
+def log_login_activity(activity_type, email, ip_address, user_agent, status, details=None):
+    """Log login-related activities"""
+    log_data = {
+        'activity': activity_type,
+        'email': email,
+        'ip_address': ip_address,
+        'user_agent': user_agent,
+        'status': status,
+        'details': details or {},
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    log_message = f"{activity_type.upper()} | Email: {email} | IP: {ip_address} | Status: {status}"
+    if details:
+        log_message += f" | Details: {details}"
+    
+    login_logger.info(log_message)
+    print(f"[LOGIN LOG] {log_message}")  # Also print to console for immediate feedback
 
 # Email configuration
 EMAIL_ADDRESS = "alphanxzen@gmail.com"
@@ -280,8 +328,11 @@ def send_otp():
     try:
         data = request.json
         email = data.get('email', '').strip().lower()
+        ip_address = request.remote_addr
+        user_agent = request.headers.get('User-Agent', 'Unknown')
         
         if not email:
+            log_login_activity('OTP_REQUEST', email, ip_address, user_agent, 'FAILED', {'error': 'Email is required'})
             return jsonify({'error': 'Email is required'}), 400
         
         # Validate email
@@ -289,6 +340,7 @@ def send_otp():
             valid = validate_email(email)
             email = valid.email
         except EmailNotValidError:
+            log_login_activity('OTP_REQUEST', email, ip_address, user_agent, 'FAILED', {'error': 'Invalid email address'})
             return jsonify({'error': 'Invalid email address'}), 400
         
         # Generate OTP
@@ -298,16 +350,21 @@ def send_otp():
         otp_storage[email] = {
             'otp': otp,
             'expires_at': datetime.now() + timedelta(minutes=10),
-            'attempts': 0
+            'attempts': 0,
+            'ip_address': ip_address,
+            'user_agent': user_agent
         }
         
         # Send email
         if send_otp_email(email, otp):
+            log_login_activity('OTP_SENT', email, ip_address, user_agent, 'SUCCESS', {'otp_length': len(otp)})
             return jsonify({'message': 'OTP sent successfully'})
         else:
+            log_login_activity('OTP_REQUEST', email, ip_address, user_agent, 'FAILED', {'error': 'Failed to send email'})
             return jsonify({'error': 'Failed to send OTP email'}), 500
             
     except Exception as e:
+        log_login_activity('OTP_REQUEST', email, ip_address, user_agent, 'ERROR', {'error': str(e)})
         print(f"Error in send_otp: {e}")
         return jsonify({'error': f'Internal server error: {str(e)}'}), 500
 
@@ -318,12 +375,16 @@ def verify_otp():
         data = request.json
         email = data.get('email', '').strip().lower()
         otp = data.get('otp', '').strip()
+        ip_address = request.remote_addr
+        user_agent = request.headers.get('User-Agent', 'Unknown')
         
         if not email or not otp:
+            log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'FAILED', {'error': 'Missing email or OTP'})
             return jsonify({'error': 'Email and OTP are required'}), 400
         
         # Check if OTP exists for this email
         if email not in otp_storage:
+            log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'FAILED', {'error': 'OTP not found or expired'})
             return jsonify({'error': 'OTP not found or expired'}), 400
         
         otp_data = otp_storage[email]
@@ -331,16 +392,19 @@ def verify_otp():
         # Check if OTP has expired
         if datetime.now() > otp_data['expires_at']:
             del otp_storage[email]
+            log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'FAILED', {'error': 'OTP expired'})
             return jsonify({'error': 'OTP has expired'}), 400
         
         # Check attempt limit (max 3 attempts)
         if otp_data['attempts'] >= 3:
             del otp_storage[email]
+            log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'BLOCKED', {'error': 'Too many failed attempts', 'attempts': otp_data['attempts']})
             return jsonify({'error': 'Too many failed attempts'}), 400
         
         # Verify OTP
         if otp_data['otp'] != otp:
             otp_data['attempts'] += 1
+            log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'FAILED', {'error': 'Invalid OTP', 'attempt': otp_data['attempts']})
             return jsonify({'error': 'Invalid OTP'}), 400
         
         # OTP is valid - generate token and clean up
@@ -349,6 +413,9 @@ def verify_otp():
         # Generate a simple token (in production, use JWT)
         token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
         
+        # Log successful login
+        log_login_activity('LOGIN_SUCCESS', email, ip_address, user_agent, 'SUCCESS', {'token_length': len(token)})
+        
         return jsonify({
             'message': 'Authentication successful',
             'token': token,
@@ -356,9 +423,67 @@ def verify_otp():
         })
         
     except Exception as e:
+        log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'ERROR', {'error': str(e)})
         return jsonify({'error': 'Internal server error'}), 500
+
+@app.route('/api/login-logs', methods=['GET'])
+def get_login_logs():
+    """Get login activity logs (admin endpoint)"""
+    try:
+        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'login_activities.log')
+        
+        if not os.path.exists(log_file):
+            return jsonify({'message': 'No login logs found', 'logs': []})
+        
+        # Read the log file
+        with open(log_file, 'r') as f:
+            logs = f.readlines()
+        
+        # Parse logs and return last 100 entries
+        parsed_logs = []
+        for log_line in logs[-100:]:  # Last 100 entries
+            if log_line.strip():
+                # Parse log line (format: timestamp - level - message)
+                parts = log_line.strip().split(' - ', 2)
+                if len(parts) >= 3:
+                    timestamp, level, message = parts
+                    parsed_logs.append({
+                        'timestamp': timestamp,
+                        'level': level,
+                        'message': message
+                    })
+        
+        return jsonify({
+            'message': f'Found {len(parsed_logs)} log entries',
+            'logs': parsed_logs,
+            'total_lines': len(logs)
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'Failed to read logs: {str(e)}'}), 500
+
+@app.route('/api/login-logs/clear', methods=['POST'])
+def clear_login_logs():
+    """Clear login activity logs (admin endpoint)"""
+    try:
+        log_file = os.path.join(os.path.dirname(__file__), 'logs', 'login_activities.log')
+        
+        if os.path.exists(log_file):
+            # Backup current log before clearing
+            backup_file = f"{log_file}.backup.{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            os.rename(log_file, backup_file)
+            
+            return jsonify({
+                'message': 'Login logs cleared successfully',
+                'backup_created': backup_file
+            })
+        else:
+            return jsonify({'message': 'No login logs to clear'})
+            
+    except Exception as e:
+        return jsonify({'error': f'Failed to clear logs: {str(e)}'}), 500
 
 if __name__ == '__main__':
     init_db()
     # Use 0.0.0.0 to allow external connections in Docker
-    app.run(host='127.0.0.1', port=5000, debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
