@@ -426,6 +426,112 @@ def verify_otp():
         log_login_activity('LOGIN_ATTEMPT', email, ip_address, user_agent, 'ERROR', {'error': str(e)})
         return jsonify({'error': 'Internal server error'}), 500
 
+@app.route('/api/send-confirmation-email', methods=['POST'])
+def send_confirmation_email():
+    """Send confirmation email for submitted application"""
+    try:
+        data = request.get_json()
+        email = data.get('email')
+        application_number = data.get('applicationNumber')
+        application_id = data.get('applicationId')
+        submitted_date = data.get('submittedDate')
+        submitted_time = data.get('submittedTime')
+        
+        if not email:
+            return jsonify({'error': 'Email is required'}), 400
+        
+        # Create confirmation email
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = email
+        msg['Subject'] = f"UK Power Networks - Application Confirmation ({application_number})"
+        
+        # Email body
+        body = f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #007bff; margin: 0;">UK Power Networks</h1>
+                    <p style="color: #666; margin: 5px 0;">Application Portal</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 30px; border-radius: 8px; margin-bottom: 20px;">
+                    <h2 style="color: #28a745; margin-top: 0;">✅ Application Submitted Successfully!</h2>
+                    <p>Dear Applicant,</p>
+                    <p>We are pleased to confirm that your application has been successfully submitted to UK Power Networks.</p>
+                    
+                    <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                        <h3 style="color: #333; margin-top: 0;">Application Details</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold;">Application Number:</td>
+                                <td style="padding: 8px 0;">{application_number}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold;">Application ID:</td>
+                                <td style="padding: 8px 0;">{application_id or 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold;">Submitted Date:</td>
+                                <td style="padding: 8px 0;">{submitted_date}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold;">Submitted Time:</td>
+                                <td style="padding: 8px 0;">{submitted_time}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; font-weight: bold;">Status:</td>
+                                <td style="padding: 8px 0; color: #28a745; font-weight: bold;">Submitted</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <h3 style="color: #333;">What happens next?</h3>
+                    <ol style="color: #333;">
+                        <li style="margin-bottom: 8px;"><strong>Initial Review:</strong> Our team will review your application and may contact you for additional information if needed.</li>
+                        <li style="margin-bottom: 8px;"><strong>Site Survey:</strong> If required, we will arrange a site survey to assess the connection requirements.</li>
+                        <li style="margin-bottom: 8px;"><strong>Quote Generation:</strong> We will generate your quote based on the information provided and site assessment.</li>
+                        <li style="margin-bottom: 8px;"><strong>Quote Delivery:</strong> Your quote will be delivered via your preferred method within 10-15 working days.</li>
+                    </ol>
+                    
+                    <div style="background: #fff3cd; padding: 15px; border-radius: 6px; margin: 20px 0;">
+                        <h4 style="color: #856404; margin-top: 0;">Important Information</h4>
+                        <ul style="color: #333; margin: 0;">
+                            <li>Please keep your application reference number safe as you will need it for future correspondence.</li>
+                            <li>If you need to make any changes to your application, please contact us as soon as possible.</li>
+                            <li>Quotes are valid for 90 days from the date of issue.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; color: #666; font-size: 0.9em;">
+                    <p>Need help? Contact support at applications@ukpowernetworks.co.uk</p>
+                    <p>Phone: 0800 029 4285 | Hours: Monday to Friday, 8am to 6pm</p>
+                    <p>&copy; 2025 UK Power Networks. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        msg.attach(MIMEText(body, 'html'))
+        
+        # Send email
+        server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        text = msg.as_string()
+        server.sendmail(EMAIL_ADDRESS, email, text)
+        server.quit()
+        
+        print(f"Confirmation email sent successfully to {email}")
+        return jsonify({'message': 'Confirmation email sent successfully'})
+        
+    except Exception as e:
+        print(f"Error sending confirmation email: {e}")
+        return jsonify({'error': 'Failed to send confirmation email'}), 500
+
 @app.route('/api/login-logs', methods=['GET'])
 def get_login_logs():
     """Get login activity logs (admin endpoint)"""

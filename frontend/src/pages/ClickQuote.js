@@ -114,20 +114,8 @@ The cloned quotation has been saved to your application and will be available in
       thresholdCriteriaAccepted: true
     });
     
-    // Show success message
-    const successMessage = `
-✅ Successfully Selected Quote!
-
-Quote ID: ${quote.quoteId}
-Customer: ${quote.customerName}
-Amount: £${quote.estimatedCost.toLocaleString()}
-Valid Until: ${quote.validUntil}
-
-Threshold criteria discrepancies have been accepted.
-You can now proceed to the next step.
-    `;
-    
-    alert(successMessage);
+    // Note: Success message and navigation are now handled in QuoteDetailsCard component
+    // This function only updates the application data
   };
 
   const handleSearchPostcode = async () => {
@@ -357,12 +345,16 @@ You can now proceed to the next step.
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log('Next button clicked, starting navigation...');
     try {
+      console.log('Saving click_quote_data:', mapData);
       await updateApplication('click_quote_data', mapData);
-      navigate('/summary');
-      onNext();
+      console.log('Data saved successfully, navigating to summary...');
+      // Use window.location for more reliable navigation
+      window.location.href = '/summary';
     } catch (error) {
       console.error('Error saving click & quote data:', error);
+      alert('Error saving data. Please try again.');
     }
   };
 

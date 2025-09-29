@@ -6,6 +6,7 @@
   justify-content: center;
   background: linear-gradient(135deg, #ff8c00 0%, #ff6b35 100%);
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .login-card {

@@ -1,11 +1,20 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const QuoteDetailsCard = ({ quote, onProceedWithQuote, title = "Highest Validity Quote" }) => {
+  const navigate = useNavigate();
+  
   if (!quote) return null;
 
-  const handleProceedWithQuote = () => {
-    // Show threshold criteria confirmation before proceeding
-    const confirmed = window.confirm(
+  const handleProceedWithQuote = (e) => {
+    // Prevent any form submission
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    
+    // Step 1: First confirmation - threshold criteria confirmation
+    const firstConfirmed = window.confirm(
       "⚠️ THRESHOLD CRITERIA DISCREPANCY CONFIRMATION\n\n" +
       "Before proceeding with this quote, please confirm that you accept any discrepancies " +
       "that may result from Threshold Criteria analysis.\n\n" +
@@ -17,8 +26,27 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, title = "Highest Validity
       "Do you wish to proceed with this quote?"
     );
     
-    if (confirmed) {
+    if (firstConfirmed) {
+      // Step 2: Call onProceedWithQuote to register the quote selection
       onProceedWithQuote(quote);
+      
+      // Step 3: Second confirmation - proceed to summary page
+      const secondConfirmed = window.confirm(
+        "✅ Quote Successfully Selected!\n\n" +
+        "Quote ID: " + quote.quoteId + "\n" +
+        "Customer: " + quote.customerName + "\n" +
+        "Amount: £" + quote.estimatedCost.toLocaleString() + "\n" +
+        "Valid Until: " + quote.validUntil + "\n\n" +
+        "Threshold criteria discrepancies have been accepted.\n" +
+        "Do you want to proceed to the Summary page?"
+      );
+      
+      // Step 4: Navigate to Summary page if second confirmation is OK
+      if (secondConfirmed) {
+        console.log('Navigating to summary page...');
+        // Use window.location for more reliable navigation
+        window.location.href = '/summary';
+      }
     }
   };
 
@@ -219,6 +247,7 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, title = "Highest Validity
         alignItems: 'center'
       }}>
         <button
+          type="button"
           onClick={handleProceedWithQuote}
           style={{
             background: '#28a745',
@@ -241,7 +270,7 @@ const QuoteDetailsCard = ({ quote, onProceedWithQuote, title = "Highest Validity
             e.target.style.transform = 'translateY(0)';
           }}
         >
-          ✅ Proceed with Existing Quote
+          ✅ Continue With Quote
         </button>
       </div>
     </div>

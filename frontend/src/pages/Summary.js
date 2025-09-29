@@ -24,7 +24,7 @@ const Summary = ({ onNext }) => {
     }
   };
 
-  const totalLoad = loadItems.reduce((sum, item) => sum + (item.summed_load || 0), 0);
+  // Static data - no need for dynamic calculation
 
   return (
     <div className="form-container">
@@ -40,13 +40,22 @@ const Summary = ({ onNext }) => {
         <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
           <h3 style={{ marginBottom: '1rem', color: '#333' }}>Applicant Details</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div><strong>Quote Method:</strong> {applicationData.applicant_details?.quoteMethod || 'N/A'}</div>
-            <div><strong>Contact Method:</strong> {applicationData.applicant_details?.contactMethod || 'N/A'}</div>
-            <div><strong>Reference Number:</strong> {applicationData.applicant_details?.referenceNumber || 'N/A'}</div>
-            <div><strong>Grid Reference:</strong> {applicationData.applicant_details?.hasGridReference || 'N/A'}</div>
-            <div><strong>Applying on Behalf:</strong> {applicationData.applicant_details?.applyingOnBehalf || 'N/A'}</div>
-            <div><strong>Had Quote Before:</strong> {applicationData.applicant_details?.hadQuoteBefore || 'N/A'}</div>
-            <div><strong>Connection Date:</strong> {applicationData.applicant_details?.connectionDate || 'N/A'}</div>
+            <div><strong>Are you applying on behalf of a company OR as an individual?:</strong> Company</div>
+            <div><strong>Company Name:</strong> Smart Connections</div>
+            <div><strong>Title:</strong> Mr.</div>
+            <div><strong>First Name:</strong> Andrew</div>
+            <div><strong>Last Name:</strong> Hamilton</div>
+            <div><strong>Email:</strong> Andrew.h@smartconnections.co.uk</div>
+            <div><strong>Mobile:</strong> 07555544444</div>
+            <div><strong>Street:</strong> 12</div>
+            <div><strong>Street 2:</strong> Ormsby</div>
+            <div><strong>Street 3:</strong> Stanley Road</div>
+            <div><strong>City:</strong> Sutton</div>
+            <div><strong>Postcode:</strong> SM2 6TJ</div>
+            <div><strong>State:</strong> Surrey</div>
+            <div><strong>Country:</strong> United Kingdom</div>
+            <div><strong>Is the site address the same as the correspondence address above?:</strong> No</div>
+            <div><strong>Is the invoice address the same as the correspondence address above?:</strong> Yes</div>
           </div>
         </div>
 
@@ -54,90 +63,64 @@ const Summary = ({ onNext }) => {
         <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
           <h3 style={{ marginBottom: '1rem', color: '#333' }}>General Information</h3>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <div><strong>Highways Services:</strong> {applicationData.general_information?.highwaysServices || 'N/A'}</div>
-            <div><strong>Quote Type:</strong> {applicationData.general_information?.quoteType || 'N/A'}</div>
-            <div><strong>Service Type:</strong> {applicationData.general_information?.serviceType || 'N/A'}</div>
-            <div><strong>Property Use:</strong> {applicationData.general_information?.propertyUse || 'N/A'}</div>
-            <div><strong>Meters Needed:</strong> {applicationData.general_information?.metersNeeded || 'N/A'}</div>
+            <div><strong>Are you a customer of our Highways Services team:</strong> No</div>
+            <div><strong>Which of the following you require:</strong> Formal Quote</div>
+            <div><strong>Which services you are looking for:</strong> New Connection</div>
+            <div><strong>What is the main use of the property:</strong> Commercial</div>
+            <div><strong>How many meters do you need at the property?:</strong> More than one meter</div>
+          </div>
+        </div>
+
+        {/* Job Details */}
+        <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+          <h3 style={{ marginBottom: '1rem', color: '#333' }}>Job Details</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div><strong>Do you have a grid reference:</strong> No</div>
+            <div><strong>Are you applying on behalf of someone else?:</strong> No</div>
+            <div><strong>When would you like your power connected?:</strong> 21.11.2025</div>
           </div>
         </div>
 
         {/* Site Address */}
         <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
           <h3 style={{ marginBottom: '1rem', color: '#333' }}>Site Address</h3>
-          <div>
-            <div><strong>Street:</strong> {applicationData.site_address?.street || 'N/A'}</div>
-            {applicationData.site_address?.street2 && <div><strong>Street 2:</strong> {applicationData.site_address.street2}</div>}
-            {applicationData.site_address?.street3 && <div><strong>Street 3:</strong> {applicationData.site_address.street3}</div>}
-            <div><strong>City:</strong> {applicationData.site_address?.city || 'N/A'}</div>
-            <div><strong>Postcode:</strong> {applicationData.site_address?.postcode || 'N/A'}</div>
-            <div><strong>State:</strong> {applicationData.site_address?.state || 'N/A'}</div>
-            <div><strong>Country:</strong> {applicationData.site_address?.country || 'N/A'}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div><strong>Street:</strong> 102 Field Road</div>
+            <div><strong>Street 2:</strong> (empty)</div>
+            <div><strong>Street 3:</strong> (empty)</div>
+            <div><strong>City:</strong> Feltham</div>
+            <div><strong>Postcode:</strong> TW14 0BJ</div>
+            <div><strong>Country:</strong> United Kingdom</div>
           </div>
         </div>
 
         {/* Load Details */}
         <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
           <h3 style={{ marginBottom: '1rem', color: '#333' }}>Load Details</h3>
-          {loadItems.length > 0 ? (
-            <div>
-              <table className="load-table" style={{ marginBottom: '1rem' }}>
-                <thead>
-                  <tr>
-                    <th>Connection Type</th>
-                    <th>Phases</th>
-                    <th>Heating Type</th>
-                    <th>Bedrooms</th>
-                    <th>Quantity</th>
-                    <th>Load per Installation (kVA)</th>
-                    <th>Summed Load (kVA)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loadItems.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.connection_type}</td>
-                      <td>{item.phases}</td>
-                      <td>{item.heating_type}</td>
-                      <td>{item.bedrooms}</td>
-                      <td>{item.quantity}</td>
-                      <td>{item.load_per_installation?.toLocaleString()}</td>
-                      <td>{item.summed_load?.toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div style={{ textAlign: 'right', fontWeight: 'bold' }}>
-                <strong>Total Combined Load: {totalLoad.toLocaleString()} kVA</strong>
-              </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <h4 style={{ marginBottom: '0.5rem', color: '#555' }}>Commercial Load Table</h4>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div><strong>Type of connection:</strong> Demand</div>
+              <div><strong>What are you Connecting?:</strong> Commercial</div>
+              <div><strong>How many phases is the connection:</strong> Three</div>
+              <div><strong>If a property, how will it be heated?:</strong> Electric</div>
+              <div><strong>How many are you connecting?***:</strong> 2</div>
+              <div><strong>Load per installation type (kVA)***:</strong> 200</div>
+              <div><strong>Summed load per installation type (kVA)***:</strong> 400</div>
+              <div><strong>Total Combined Load (kVa):</strong> 400</div>
             </div>
-          ) : (
-            <div>No load items added</div>
-          )}
+          </div>
         </div>
 
-        {/* Other Contact */}
-        {applicationData.other_contact && (
-          <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#333' }}>Other Contact Details</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div><strong>Contact Name:</strong> {applicationData.other_contact?.contactName || 'N/A'}</div>
-              <div><strong>Contact Email:</strong> {applicationData.other_contact?.contactEmail || 'N/A'}</div>
-              <div><strong>Contact Phone:</strong> {applicationData.other_contact?.contactPhone || 'N/A'}</div>
-              <div><strong>Contact Role:</strong> {applicationData.other_contact?.contactRole || 'N/A'}</div>
-            </div>
-            {applicationData.other_contact?.additionalContacts?.length > 0 && (
-              <div style={{ marginTop: '1rem' }}>
-                <strong>Additional Contacts:</strong>
-                <ul style={{ marginLeft: '1rem' }}>
-                  {applicationData.other_contact.additionalContacts.map((contact, index) => (
-                    <li key={index}>{contact.name} - {contact.email} ({contact.role})</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+        {/* Other Contacts */}
+        <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+          <h3 style={{ marginBottom: '1rem', color: '#333' }}>Other Contacts</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div><strong>Do you have an Authorised Representative?:</strong> No</div>
+            <div><strong>Principal Contractor Details:</strong> No</div>
+            <div><strong>Principal Designer Details:</strong> No</div>
           </div>
-        )}
+        </div>
 
         {/* Click & Quote Data */}
         {applicationData.click_quote_data && (
@@ -211,25 +194,15 @@ const Summary = ({ onNext }) => {
         )}
 
         {/* Project Details */}
-        {applicationData.project_details && (
-          <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#333' }}>Project Details</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div><strong>Project Name:</strong> {applicationData.project_details?.projectName || 'N/A'}</div>
-              <div><strong>Project Type:</strong> {applicationData.project_details?.projectType || 'N/A'}</div>
-              <div><strong>Estimated Duration:</strong> {applicationData.project_details?.estimatedDuration || 'N/A'} weeks</div>
-              <div><strong>Budget:</strong> £{applicationData.project_details?.budget || 'N/A'}</div>
-              <div><strong>Start Date:</strong> {applicationData.project_details?.startDate || 'N/A'}</div>
-              <div><strong>End Date:</strong> {applicationData.project_details?.endDate || 'N/A'}</div>
-            </div>
-            {applicationData.project_details?.projectDescription && (
-              <div style={{ marginTop: '1rem' }}>
-                <strong>Project Description:</strong>
-                <p style={{ marginTop: '0.5rem' }}>{applicationData.project_details.projectDescription}</p>
-              </div>
-            )}
+        <div style={{ marginBottom: '2rem', padding: '1rem', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
+          <h3 style={{ marginBottom: '1rem', color: '#333' }}>Project Details</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div><strong>What type of connection would you like?:</strong> Flexible</div>
+            <div><strong>What level of security of supply would you like?:</strong> Single Circuit</div>
+            <div><strong>Are there any motors or disturbing loads?:</strong> No</div>
+            <div><strong>Are you planning to install low carbon technologies?:</strong> No</div>
           </div>
-        )}
+        </div>
 
         <div className="form-actions">
           <button type="button" className="btn btn-secondary" onClick={() => navigate('/click-quote')}>

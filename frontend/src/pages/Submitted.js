@@ -6,6 +6,8 @@ const Submitted = () => {
   const navigate = useNavigate();
   const { applicationData, applicationId } = useApplication();
   const [applicationNumber, setApplicationNumber] = useState('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     // Generate application number
@@ -27,6 +29,51 @@ const Submitted = () => {
     console.log('View application status');
   };
 
+  const handleDownloadPDF = () => {
+    // Create a temporary link element to trigger download
+    const link = document.createElement('a');
+    link.href = '/UKPN.8500308260.FormalOffer.pdf';
+    link.download = 'UKPN.8500308260.FormalOffer.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleSendEmail = async () => {
+    setIsSendingEmail(true);
+    
+    try {
+      // Get user email from application data or use a default
+      const userEmail = applicationData.applicant_details?.email || 'Andrew.h@smartconnections.co.uk';
+      
+      const response = await fetch('http://localhost:5000/api/send-confirmation-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          applicationNumber: applicationNumber,
+          applicationId: applicationId,
+          submittedDate: new Date().toLocaleDateString(),
+          submittedTime: new Date().toLocaleTimeString()
+        }),
+      });
+
+      if (response.ok) {
+        setEmailSent(true);
+        alert('Confirmation email sent successfully!');
+      } else {
+        throw new Error('Failed to send email');
+      }
+    } catch (error) {
+      console.error('Error sending email:', error);
+      alert('Failed to send email. Please try again later.');
+    } finally {
+      setIsSendingEmail(false);
+    }
+  };
+
   return (
     <div className="form-container">
       <div style={{ textAlign: 'center', padding: '2rem' }}>
@@ -44,52 +91,30 @@ const Submitted = () => {
             <div><strong>Submitted Date:</strong> {new Date().toLocaleDateString()}</div>
             <div><strong>Submitted Time:</strong> {new Date().toLocaleTimeString()}</div>
             <div><strong>Status:</strong> <span style={{ color: '#28a745', fontWeight: 'bold' }}>Submitted</span></div>
-            <div><strong>Quote Method:</strong> {applicationData.applicant_details?.quoteMethod || 'N/A'}</div>
+            <div><strong>Quote Method:</strong> Cloned</div>
           </div>
         </div>
 
-        <div style={{ backgroundColor: '#e7f3ff', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', textAlign: 'left' }}>
-          <h3 style={{ marginBottom: '1rem', color: '#0066cc' }}>What happens next?</h3>
-          <ol style={{ marginLeft: '1rem', color: '#333' }}>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <strong>Confirmation Email:</strong> You will receive a confirmation email within 24 hours with your application reference number.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <strong>Initial Review:</strong> Our team will review your application and may contact you for additional information if needed.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <strong>Site Survey:</strong> If required, we will arrange a site survey to assess the connection requirements.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <strong>Quote Generation:</strong> We will generate your quote based on the information provided and site assessment.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              <strong>Quote Delivery:</strong> Your quote will be delivered via your preferred method within 10-15 working days.
-            </li>
-          </ol>
-        </div>
 
-        <div style={{ backgroundColor: '#fff3cd', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem', textAlign: 'left' }}>
-          <h3 style={{ marginBottom: '1rem', color: '#856404' }}>Important Information</h3>
-          <ul style={{ marginLeft: '1rem', color: '#333' }}>
-            <li style={{ marginBottom: '0.5rem' }}>
-              Please keep your application reference number safe as you will need it for future correspondence.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              If you need to make any changes to your application, please contact us as soon as possible.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              Quotes are valid for 90 days from the date of issue.
-            </li>
-            <li style={{ marginBottom: '0.5rem' }}>
-              For any queries, please contact our customer service team.
-            </li>
-          </ul>
-        </div>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={handleViewStatus}>
             View Application Status
+          </button>
+          <button className="btn btn-success" onClick={handleDownloadPDF} style={{ backgroundColor: '#28a745', borderColor: '#28a745' }}>
+            📄 Download Formal Offer PDF
+          </button>
+          <button 
+            className="btn btn-info" 
+            onClick={handleSendEmail} 
+            disabled={isSendingEmail || emailSent}
+            style={{ 
+              backgroundColor: emailSent ? '#6c757d' : '#17a2b8', 
+              borderColor: emailSent ? '#6c757d' : '#17a2b8',
+              opacity: emailSent ? 0.6 : 1
+            }}
+          >
+            {isSendingEmail ? '📧 Sending...' : emailSent ? '✅ Email Sent' : '📧 Send Confirmation Email'}
           </button>
           <button className="btn btn-outline" onClick={handleNewApplication}>
             Start New Application
